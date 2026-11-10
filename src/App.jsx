@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyYOUR_API_KEY_HERE",
+  apiKey: "AIzaSyD2NbX9G6YAfgiGPpxhJsbI_8uw2tM4-VU",
   authDomain: "sorteos-jb3.firebaseapp.com",
   projectId: "sorteos-jb3",
-  storageBucket: "sorteos-jb3.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef123456"
+  storageBucket: "sorteos-jb3.firebasestorage.app",
+  messagingSenderId: "578473817320",
+  appId: "1:578473817320:web:84301c2021bfb2b5e3855d"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
