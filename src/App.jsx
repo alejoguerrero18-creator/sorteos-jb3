@@ -559,7 +559,7 @@ export default function App() {
                     <p style={{ margin: '0 0 5px 0' }}><strong>Comprador:</strong> {numbers[selectedNum].nombre}</p>
                     <p style={{ margin: '0 0 10px 0' }}><strong>Estado:</strong> <span style={{ color: numbers[selectedNum].estado === 'pagado' ? '#4ade80' : '#facc15' }}>{numbers[selectedNum].estado.toUpperCase()}</span></p>
                     
-                    {/* Visualización del comprobante para el Administrador / Cliente */}
+                    {/* Visualización del comprobante para todos */}
                     {numbers[selectedNum].comprobante && (
                       <div style={{ marginTop: '10px', textAlign: 'center' }}>
                         <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '5px' }}>Comprobante de pago:</p>
@@ -572,14 +572,19 @@ export default function App() {
                     )}
                   </div>
 
-                  {isAdmin && (
+                  {/* BOTONES DE ADMINISTRACIÓN Y CIERRE */}
+                  {isAdmin ? (
                     <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
                       <button onClick={() => updateStatus(selectedNum, 'pagado')} style={{ flex: 1, padding: '10px', background: '#16a34a', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>Confirmar Pago</button>
                       <button onClick={() => updateStatus(selectedNum, 'libre')} style={{ flex: 1, padding: '10px', background: '#dc2626', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>Liberar</button>
                     </div>
+                  ) : (
+                    <p style={{ fontSize: '0.8rem', color: '#9ca3af', textAlign: 'center', marginBottom: '15px' }}>
+                      Este puesto ya se encuentra apartado. El administrador verificará tu comprobante.
+                    </p>
                   )}
 
-                  <button onClick={() => setSelectedNum(null)} style={{ width: '100%', padding: '10px', background: '#1f2937', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}>Cerrar</button>
+                              <button onClick={() => setSelectedNum(null)} style={{ width: '100%', padding: '10px', background: '#1f2937', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}>Cerrar</button>
                 </div>
               ) : (
                 <form onSubmit={handleReserve}>
