@@ -57,7 +57,7 @@ export default function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   
-  const [modality, setModality] = useState(MODALIDADES[3]);
+  const [modality, setModality] = useState(MODALIDADES[4]);
   const [numbers, setNumbers] = useState({});
   const [selectedNum, setSelectedNum] = useState(null);
   const [buyerName, setBuyerName] = useState('');
