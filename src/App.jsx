@@ -16,7 +16,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-
 const LINEAS_25_MAP = {
   'A': ['00', '25', '50', '75'],
   'B': ['01', '26', '51', '76'],
@@ -63,6 +62,7 @@ export default function App() {
   const [numbers, setNumbers] = useState({});
   const [selectedNum, setSelectedNum] = useState(null);
   const [buyerName, setBuyerName] = useState('');
+  const [paymentReceipt, setPaymentReceipt] = useState('');
   
   const [qrUrl, setQrUrl] = useState('');
   const [lotteryResultImg, setLotteryResultImg] = useState('');
@@ -76,7 +76,6 @@ export default function App() {
         const data = docSnap.data();
         if (data.numbers) setNumbers(data.numbers);
         
-        // Carga y sincroniza la modalidad activa guardada en Firebase
         if (data.modalityId) {
           const modEncontrada = MODALIDADES.find(m => m.id === data.modalityId);
           if (modEncontrada) setModality(modEncontrada);
@@ -131,7 +130,6 @@ export default function App() {
 
   const selectModality = async (mod) => {
     setModality(mod);
-    // Guarda el ID de la modalidad en Firestore para que no cambie al recargar la página
     await updateDoc(doc(db, "sorteos", "estado_actual"), { 
       modalityId: mod.id, 
       numbers: {} 
@@ -166,10 +164,7 @@ export default function App() {
       reader.onloadend = async () => {
         const base64String = reader.result;
         setQrUrl(base64String);
-        
         try {
-          // Usamos setDoc con { merge: true } para actualizar SOLAMENTE el qrUrl 
-          // sin tocar ni recrear ningún otro campo del documento en Firestore.
           await setDoc(doc(db, "sorteos", "estado_actual"), { qrUrl: base64String }, { merge: true });
           alert('¡Código QR de pago actualizado con éxito!');
         } catch (error) {
@@ -181,17 +176,34 @@ export default function App() {
     }
   };
 
+  // Función para capturar el comprobante del cliente
+  const handleReceiptUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPaymentReceipt(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleReserve = async (e) => {
     e.preventDefault();
     if (!selectedNum || !buyerName) return;
     const newNumbers = {
       ...numbers,
-      [selectedNum]: { nombre: buyerName, estado: 'reservado' }
+      [selectedNum]: { 
+        nombre: buyerName, 
+        estado: 'reservado',
+        comprobante: paymentReceipt || '' 
+      }
     };
     await updateDoc(doc(db, "sorteos", "estado_actual"), { numbers: newNumbers });
     setSelectedNum(null);
     setBuyerName('');
-    alert('¡Puesto apartado con éxito! El administrador verificará tu pago.');
+    setPaymentReceipt('');
+    alert('¡Puesto apartado con éxito! El administrador verificará tu comprobante.');
   };
 
   const updateStatus = async (numStr, state) => {
@@ -544,7 +556,19 @@ export default function App() {
                 <div>
                   <div style={{ background: '#0b0f19', padding: '12px', borderRadius: '8px', marginBottom: '15px', border: '1px solid #1f2937' }}>
                     <p style={{ margin: '0 0 5px 0' }}><strong>Comprador:</strong> {numbers[selectedNum].nombre}</p>
-                    <p style={{ margin: 0 }}><strong>Estado:</strong> <span style={{ color: numbers[selectedNum].estado === 'pagado' ? '#4ade80' : '#facc15' }}>{numbers[selectedNum].estado.toUpperCase()}</span></p>
+                    <p style={{ margin: '0 0 10px 0' }}><strong>Estado:</strong> <span style={{ color: numbers[selectedNum].estado === 'pagado' ? '#4ade80' : '#facc15' }}>{numbers[selectedNum].estado.toUpperCase()}</span></p>
+                    
+                    {/* Visualización del comprobante para el Administrador / Cliente */}
+                    {numbers[selectedNum].comprobante && (
+                      <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                        <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '5px' }}>Comprobante de pago:</p>
+                        <img 
+                          src={numbers[selectedNum].comprobante} 
+                          alt="Comprobante de pago" 
+                          style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '6px', border: '1px solid #374151', objectFit: 'contain' }}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {isAdmin && (
@@ -553,6 +577,8 @@ export default function App() {
                       <button onClick={() => updateStatus(selectedNum, 'libre')} style={{ flex: 1, padding: '10px', background: '#dc2626', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>Liberar</button>
                     </div>
                   )}
+
+                  <button onClick={() => setSelectedNum(null)} style={{ width: '100%', padding: '10px', background: '#1f2937', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}>Cerrar</button>
                 </div>
               ) : (
                 <form onSubmit={handleReserve}>
@@ -569,6 +595,19 @@ export default function App() {
                       value={buyerName}
                       onChange={e => setBuyerName(e.target.value)}
                       style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #374151', background: '#0b0f19', color: 'white', boxSizing: 'border-box' }}
+                    />
+                  </div>
+
+                  {/* Campo para adjuntar el comprobante de pago */}
+                  <div style={{ marginBottom: '15px' }}>
+                    <label style={{ fontSize: '0.8rem', color: '#f59e0b', display: 'block', marginBottom: '5px' }}>
+                      📸 Adjuntar Comprobante de Transferencia:
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/png, image/jpeg"
+                      onChange={handleReceiptUpload}
+                      style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #374151', background: '#0b0f19', color: 'white', fontSize: '0.8rem', cursor: 'pointer' }}
                     />
                   </div>
 
@@ -651,11 +690,11 @@ export default function App() {
                     {/* Vista para Código QR */}
                     {selectedPaymentMethod === 'qr' && (
                       <div style={{ textAlign: 'center', background: '#111827', padding: '12px', borderRadius: '8px', border: '1px solid #374151' }}>
-                        <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: '0 0 8px 0' }}>Escanea con tu App para realizar el pago:</p>
+                        <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: '0 0 8px 0' }}>Escanea el código QR para pagar:</p>
                         {qrUrl ? (
-                          <img src={qrUrl} alt="QR de Pago" style={{ maxWidth: '180px', width: '100%', borderRadius: '8px', border: '1px solid #374151' }} />
+                          <img src={qrUrl} alt="QR de Pago" style={{ maxWidth: '180px', maxHeight: '180px', borderRadius: '8px', border: '1px solid #374151' }} />
                         ) : (
-                          <span style={{ fontSize: '0.8rem', color: '#ef4444' }}>No hay imagen QR cargada aún.</span>
+                          <p style={{ fontSize: '0.8rem', color: '#f59e0b' }}>El administrador aún no ha cargado el código QR.</p>
                         )}
                       </div>
                     )}
@@ -663,30 +702,31 @@ export default function App() {
                     {/* Vista para Nequi */}
                     {selectedPaymentMethod === 'nequi' && (
                       <div style={{ textAlign: 'center', background: '#111827', padding: '12px', borderRadius: '8px', border: '1px solid #374151' }}>
-                        <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: '0 0 6px 0' }}>Transfiere a esta cuenta Nequi:</p>
-                        <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: '#4ade80', letterSpacing: '1px', marginBottom: '8px' }}>
-                          3182521952
+                        <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: '0 0 6px 0' }}>Número de Nequi para transferir:</p>
+                        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#38bdf8', letterSpacing: '1px', marginBottom: '8px' }}>
+                          320 000 0000
                         </div>
                         <button
                           type="button"
-                          onClick={() => copyToClipboard('3182521952')}
-                          style={{ padding: '6px 12px', background: '#1e293b', color: '#4ade80', border: '1px solid #374151', borderRadius: '6px', fontSize: '0.75rem', cursor: 'pointer', fontWeight: '600' }}
+                          onClick={() => copyToClipboard('3200000000')}
+                          style={{ padding: '6px 12px', background: '#1e293b', color: '#f59e0b', border: '1px solid #374151', borderRadius: '6px', fontSize: '0.75rem', cursor: 'pointer', fontWeight: '600' }}
                         >
-                          📋 Copiar Número Nequi
+                          📋 Copiar Número
                         </button>
                       </div>
                     )}
                   </div>
 
-                  <button type="submit" style={{ width: '100%', padding: '12px', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '10px', fontSize: '0.95rem' }}>
-                    Confirmar Reserva y Notificar Pago
-                  </button>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button type="submit" style={{ flex: 1, padding: '12px', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
+                      Confirmar Reserva
+                    </button>
+                    <button type="button" onClick={() => setSelectedNum(null)} style={{ padding: '12px 16px', background: '#1f2937', color: '#e5e7eb', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}>
+                      Cancelar
+                    </button>
+                  </div>
                 </form>
               )}
-
-              <button onClick={() => setSelectedNum(null)} style={{ width: '100%', padding: '10px', background: '#1f2937', color: '#e5e7eb', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '500' }}>
-                Cerrar
-              </button>
             </div>
           </div>
         )}
