@@ -48,7 +48,6 @@ const LINEAS_25_MAP = {
 const MODALIDADES = [
   { id: 1, tipo: 'numeros', nombre: '$2.000 - Doble Oportunidad', desc: '00 al 99 (1 num/puesto) - 2 Últimas ($100k), 2 Primeras ($40k)', precio: 2000, premio: 140000, maxRecaudo: 200000, utilidad: 60000, totalItems: 100 },
   { id: 2, tipo: 'letras', nombre: '$5.000 - 4 Oportunidades (A-Y)', desc: '25 Líneas (4 nums/línea) - 2 Últimas ($80k)', precio: 5000, premio: 250000, maxRecaudo: 500000, utilidad: 250000, totalItems: 25 },
-  { id: 3, tipo: 'numeros', nombre: '$3.000 - Doble + Acumulado', desc: '00 al 99 - 2 Últimas ($50k), 2 Primeras ($50k) + Pozo Acumulado', precio: 3000, premio: 150000, maxRecaudo: 300000, utilidad: 150000, totalItems: 100 },
   { id: 4, tipo: 'letras', nombre: '$6.000 - Sorteo Espejo', desc: '50 Líneas o variantes - 2 Últimas ($100k), 2 Primeras ($100k)', precio: 6000, premio: 300000, maxRecaudo: 600000, utilidad: 300000, totalItems: 25 },
   { id: 5, tipo: 'numeros', nombre: '$3.000 - Triple Oportunidad', desc: '00 al 99 - 2 Últimas ($100k), 2 Primeras ($50k), Medio ($50k)', precio: 3000, premio: 200000, maxRecaudo: 300000, utilidad: 100000, totalItems: 100 },
   { id: 6, tipo: 'letras', nombre: '$10.000 - 4 Oportunidades (A-Y)', desc: '25 Líneas (4 nums/línea) - 2 Últimas ($150k)', precio: 10000, premio: 450000, maxRecaudo: 1000000, utilidad: 550000, totalItems: 25 }
