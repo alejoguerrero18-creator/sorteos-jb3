@@ -176,7 +176,6 @@ export default function App() {
     }
   };
 
-  // Función para capturar el comprobante del cliente
   const handleReceiptUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -191,6 +190,7 @@ export default function App() {
   const handleReserve = async (e) => {
     e.preventDefault();
     if (!selectedNum || !buyerName) return;
+    
     const newNumbers = {
       ...numbers,
       [selectedNum]: { 
@@ -199,6 +199,7 @@ export default function App() {
         comprobante: paymentReceipt || '' 
       }
     };
+    
     await updateDoc(doc(db, "sorteos", "estado_actual"), { numbers: newNumbers });
     setSelectedNum(null);
     setBuyerName('');
