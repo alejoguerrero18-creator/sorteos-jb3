@@ -86,7 +86,7 @@ export default function App() {
         if (data.lotteryResultImg !== undefined) setLotteryResultImg(data.lotteryResultImg);
       } else {
         setDoc(doc(db, "sorteos", "estado_actual"), {
-          numbers: {},
+          numbers: {5},
           modalityId: ,
           qrUrl: '',
           lotteryResultImg: ''
