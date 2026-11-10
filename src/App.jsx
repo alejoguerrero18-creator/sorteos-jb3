@@ -559,8 +559,8 @@ export default function App() {
                     <p style={{ margin: '0 0 5px 0' }}><strong>Comprador:</strong> {numbers[selectedNum].nombre}</p>
                     <p style={{ margin: '0 0 10px 0' }}><strong>Estado:</strong> <span style={{ color: numbers[selectedNum].estado === 'pagado' ? '#4ade80' : '#facc15' }}>{numbers[selectedNum].estado.toUpperCase()}</span></p>
                     
-                    {/* Visualización del comprobante para todos */}
-                    {numbers[selectedNum].comprobante && (
+                    {/* Visualización del comprobante SOLO para el Admin */}
+                    {isAdmin && numbers[selectedNum].comprobante && (
                       <div style={{ marginTop: '10px', textAlign: 'center' }}>
                         <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '5px' }}>Comprobante de pago:</p>
                         <img 
