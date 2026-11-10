@@ -1,11 +1,10 @@
-// Import the functions you need from the SDKs you need
+import { useState, useEffect } from 'react';
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD2NbX9G6YAfgiGPpxhJsbI_8uw2tM4-VU",
+  apiKey: "AIzaSyD2NBX9G6YAfgiGPxhJsbl_8uw2tM4-VU",
   authDomain: "sorteos-jb3.firebaseapp.com",
   projectId: "sorteos-jb3",
   storageBucket: "sorteos-jb3.firebasestorage.app",
@@ -15,6 +14,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 
 const LINEAS_25_MAP = {
