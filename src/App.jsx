@@ -65,7 +65,6 @@ export default function App() {
   const [qrUrl, setQrUrl] = useState('');
   const [lotteryResultImg, setLotteryResultImg] = useState('');
 
-  // Método de pago seleccionado por el usuario ('breb', 'qr', 'nequi')
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('breb');
   const [timeLeft, setTimeLeft] = useState(300);
 
@@ -74,10 +73,13 @@ export default function App() {
       if (docSnap.exists()) {
         const data = docSnap.data();
         if (data.numbers) setNumbers(data.numbers);
+        
+        // Carga y sincroniza la modalidad activa guardada en Firebase
         if (data.modalityId) {
-          const mod = MODALIDADES.find(m => m.id === data.modalityId);
-          if (mod) setModality(mod);
+          const modEncontrada = MODALIDADES.find(m => m.id === data.modalityId);
+          if (modEncontrada) setModality(modEncontrada);
         }
+
         if (data.qrUrl) setQrUrl(data.qrUrl);
         if (data.lotteryResultImg !== undefined) setLotteryResultImg(data.lotteryResultImg);
       } else {
@@ -127,7 +129,11 @@ export default function App() {
 
   const selectModality = async (mod) => {
     setModality(mod);
-    await updateDoc(doc(db, "sorteos", "estado_actual"), { modalityId: mod.id, numbers: {} });
+    // Guarda el ID de la modalidad en Firestore para que no cambie al recargar la página
+    await updateDoc(doc(db, "sorteos", "estado_actual"), { 
+      modalityId: mod.id, 
+      numbers: {} 
+    });
   };
 
   const handleImageUpload = (e) => {
