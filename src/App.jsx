@@ -709,7 +709,7 @@ export default function App() {
                         </div>
                         <button
                           type="button"
-                          onClick={() => copyToClipboard('3200000000')}
+                          onClick={() => copyToClipboard('3182521952')}
                           style={{ padding: '6px 12px', background: '#1e293b', color: '#f59e0b', border: '1px solid #374151', borderRadius: '6px', fontSize: '0.75rem', cursor: 'pointer', fontWeight: '600' }}
                         >
                           📋 Copiar Número
