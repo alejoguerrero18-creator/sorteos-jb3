@@ -60,7 +60,7 @@ export default function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   
-  const [modality, setModality] = useState(MODALIDADES[5]);
+  const [modality, setModality] = useState(MODALIDADES[0]);
   const [numbers, setNumbers] = useState({});
   const [selectedNum, setSelectedNum] = useState(null);
   const [buyerName, setBuyerName] = useState('');
@@ -88,7 +88,7 @@ export default function App() {
       } else {
         setDoc(doc(db, "sorteos", "estado_actual"), {
           numbers: {},
-          modalityId: 5,
+          modalityId: ,
           qrUrl: '',
           lotteryResultImg: ''
         });
