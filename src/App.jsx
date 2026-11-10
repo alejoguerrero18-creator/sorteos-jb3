@@ -15,7 +15,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
 
 const LINEAS_25_MAP = {
   'A': ['00', '25', '50', '75'],
