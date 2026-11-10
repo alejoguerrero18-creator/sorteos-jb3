@@ -85,7 +85,7 @@ export default function App() {
       } else {
         setDoc(doc(db, "sorteos", "estado_actual"), {
           numbers: {},
-          modalityId: 5,
+          modalityId: 3,
           qrUrl: '',
           lotteryResultImg: ''
         });
