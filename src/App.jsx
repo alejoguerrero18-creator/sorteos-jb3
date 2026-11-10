@@ -705,7 +705,7 @@ export default function App() {
                       <div style={{ textAlign: 'center', background: '#111827', padding: '12px', borderRadius: '8px', border: '1px solid #374151' }}>
                         <p style={{ fontSize: '0.8rem', color: '#9ca3af', margin: '0 0 6px 0' }}>Número de Nequi para transferir:</p>
                         <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#38bdf8', letterSpacing: '1px', marginBottom: '8px' }}>
-                          320 000 0000
+                          318 252 1952
                         </div>
                         <button
                           type="button"
