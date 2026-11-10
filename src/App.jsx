@@ -164,8 +164,16 @@ export default function App() {
       reader.onloadend = async () => {
         const base64String = reader.result;
         setQrUrl(base64String);
-        await updateDoc(doc(db, "sorteos", "estado_actual"), { qrUrl: base64String });
-        alert('¡Código QR de pago actualizado con éxito!');
+        
+        try {
+          // Usamos setDoc con { merge: true } para actualizar SOLAMENTE el qrUrl 
+          // sin tocar ni recrear ningún otro campo del documento en Firestore.
+          await setDoc(doc(db, "sorteos", "estado_actual"), { qrUrl: base64String }, { merge: true });
+          alert('¡Código QR de pago actualizado con éxito!');
+        } catch (error) {
+          console.error("Error al subir QR:", error);
+          alert('Hubo un error al guardar el QR.');
+        }
       };
       reader.readAsDataURL(file);
     }
